@@ -1,5 +1,11 @@
-## Next.js App Router Course - Starter
+## BlockhouseOA
 
-This is the starter template for the Next.js App Router Course. It contains the starting code for the dashboard application.
+This is a simple NextJS project that integrated with Apexcharts to produce charts from the data recieved from blockhouseOADjango project
 
-For more information, see the [course curriculum](https://nextjs.org/learn) on the Next.js Website.
+# Steps to run the project
+1) pnpm install
+2) pnpm dev
+
+This should boot up the project on [http](http://localhost:3000/)
+
+NOTE: The blockhouseOADjango must be running before you try to run UI.

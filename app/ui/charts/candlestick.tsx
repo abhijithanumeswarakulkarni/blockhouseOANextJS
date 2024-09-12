@@ -3,6 +3,9 @@ import { ApexOptions } from 'apexcharts';
 import axios from 'axios';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
+import { ICandlestickData } from '@/app/lib/definitions';
+import { getCandlestickApi } from '@/app/lib/utils';
+import './charts.css';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -27,21 +30,29 @@ const seriesObj = {
 };
 
 const CandleStickChart = () => {
-    const [chartData, setChartData] = useState(null);
+    const [chartData, setChartData] = useState<Array<ICandlestickData> | undefined>(undefined);
     useEffect(() => {
-        if (chartData === null) {
+        if (chartData === undefined) {
             // Added timeout just to showcase the screen when data takes too long to load.
-            setTimeout(() => axios.get('http://127.0.0.1:8000/api/candlestick-data/').then((response: any) => setChartData(response?.data?.data)), 1000)
+            setTimeout(() => axios.get(getCandlestickApi()).then((response: any) => setChartData(response?.data?.data)), 1000)
         };
     }, []);
     return (
-        chartData === null ? (<div className="spinner-border text-primary" role="status" />) : <Chart
-            options={options}
-            series={[{...seriesObj, data: chartData}]}
-            type="candlestick"
-            width="240%"
-            height="90%"
-        />
+        <div className="card">
+            {
+                !chartData ? (<div className="spinner-border text-primary" role="status" />) :
+                <>
+                    <h5 className="card-title">Past Month Market Values</h5>
+                    <Chart
+                        options={options}
+                        series={[{...seriesObj, data: chartData}]}
+                        type="candlestick"
+                        width={800}
+                        height={400}
+                    />
+                </>
+            }
+        </div>
     )
 };
 

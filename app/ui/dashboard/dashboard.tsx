@@ -10,18 +10,10 @@ const CandleStickChart = dynamic(() => import('../charts/candlestick'), {ssr: fa
 export default function Dashboard() {
   return (
     <div className="dashboard">
-      <div className="card">
         <CandleStickChart />
-      </div>
-      <div className="card">
         <LineChart />
-      </div>
-      <div className="card">
         <BarChart />
-      </div>
-      <div className="card">
         <PieChart />
-      </div>
     </div>
   );
 }

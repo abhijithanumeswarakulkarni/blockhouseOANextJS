@@ -1,0 +1,8 @@
+.card {
+    margin: 10px;
+    min-width: 48% !important;
+    min-height: 380px;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+}

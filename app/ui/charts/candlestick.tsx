@@ -1,11 +1,17 @@
 "use client";
+import { ApexOptions } from 'apexcharts';
+import axios from 'axios';
 import dynamic from 'next/dynamic';
+import { useEffect, useState } from 'react';
+
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const options = {
+const options: ApexOptions = {
     chart: {
-        id: "candlestick"
+        id: "candlestick",
+        fontFamily: "'IBM Plex Mono', monospace",
     },
+    // @ts-ignore
     plotoptions: {
         candlestick: {
           colors: {
@@ -16,44 +22,25 @@ const options = {
       }
 };
 
-const series = [{
+const seriesObj = {
     name: "Stock Price",
-    data: [
-        { x: "2024-01-01", y: [28, 35, 22, 32] },
-        { x: "2024-01-02", y: [32, 30, 29, 28] },
-        { x: "2024-01-03", y: [28, 34, 25, 30] },
-        { x: "2024-01-04", y: [30, 33, 28, 29] },
-        { x: "2024-01-05", y: [29, 35, 27, 34] },
-        { x: "2024-01-06", y: [34, 37, 31, 33] },
-        { x: "2024-01-07", y: [33, 36, 30, 35] },
-        { x: "2024-01-08", y: [35, 37, 32, 34] },
-        { x: "2024-01-09", y: [34, 39, 33, 36] },
-        { x: "2024-01-10", y: [36, 38, 34, 34] },
-        { x: "2024-01-11", y: [34, 37, 32, 35] },
-        { x: "2024-01-12", y: [35, 39, 33, 34] },
-        { x: "2024-01-13", y: [34, 38, 32, 37] },
-        { x: "2024-01-14", y: [37, 40, 35, 36] },
-        { x: "2024-01-15", y: [36, 41, 34, 40] },
-        { x: "2024-01-16", y: [40, 43, 38, 41] },
-        { x: "2024-01-17", y: [41, 44, 39, 42] },
-        { x: "2024-01-18", y: [42, 46, 40, 44] },
-        { x: "2024-01-19", y: [44, 48, 43, 45] },
-        { x: "2024-01-20", y: [45, 49, 44, 48] },
-        { x: "2024-01-21", y: [48, 47, 45, 46] },
-        { x: "2024-01-22", y: [46, 48, 44, 45] },
-        { x: "2024-01-23", y: [45, 50, 43, 49] },
-        { x: "2024-01-24", y: [49, 51, 46, 50] },
-        { x: "2024-01-25", y: [50, 52, 48, 51] }
-    ]
-}];
+};
 
 const CandleStickChart = () => {
+    const [chartData, setChartData] = useState(null);
+    useEffect(() => {
+        if (chartData === null) {
+            // Added timeout just to showcase the screen when data takes too long to load.
+            setTimeout(() => axios.get('http://127.0.0.1:8000/api/candlestick-data/').then((response: any) => setChartData(response?.data?.data)), 1000)
+        };
+    }, []);
     return (
-        <Chart
+        chartData === null ? (<div className="spinner-border text-primary" role="status" />) : <Chart
             options={options}
-            series={series}
+            series={[{...seriesObj, data: chartData}]}
             type="candlestick"
-            width="700"
+            width="240%"
+            height="90%"
         />
     )
 };

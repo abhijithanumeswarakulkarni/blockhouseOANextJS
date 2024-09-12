@@ -1,10 +1,11 @@
 import React from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import LineChart from "../charts/line";
-import BarChart from "../charts/bar";
-import PieChart from "../charts/pie";
-import CandleStickChart from "../charts/candlestick";
+import dynamic from 'next/dynamic';
 import './dashboard.css';
+
+const LineChart = dynamic(() => import('../charts/line'), { ssr: false });
+const BarChart = dynamic(() => import('../charts/bar'), {ssr: false});
+const PieChart = dynamic(() => import('../charts/pie'), {ssr: false});
+const CandleStickChart = dynamic(() => import('../charts/candlestick'), {ssr: false});
 
 export default function Dashboard() {
   return (

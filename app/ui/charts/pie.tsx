@@ -1,34 +1,43 @@
 "use client";
+import { ApexOptions } from 'apexcharts';
+import axios from 'axios';
 import dynamic from 'next/dynamic';
+import { useEffect, useState } from 'react';
+
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const options = {
-    labels: [
-        "Red", "Blue", "Yellow", "Green", "Purple", 
-        "Orange", "Cyan", "Magenta", "Lime", "Pink", 
-        "Teal", "Lavender", "Brown", "Beige", "Gray"
-    ],
+const options: ApexOptions = {
     chart: {
         id: "pie",
+        fontFamily: "'IBM Plex Mono', monospace",
     },
     legend: {
         position: 'bottom'
     }
 };
 
-const series = [
-    300, 50, 100, 75, 60, 
-    90, 120, 85, 70, 95, 
-    110, 65, 80, 40, 55
-];
-
 const PieChart = () => {
+    const [labels, setLabels] = useState<Array<string> | null>(null);
+    const [series, setSeries] = useState<Array<number> | null>(null);
+    const [colors, setColors] = useState<Array<string> | null>(null);
+
+    useEffect(() => {
+        if (labels === null || series === null) {
+            // Added timeout just to showcase the screen when data takes too long to load.
+            setTimeout(() => axios.get('http://127.0.0.1:8000/api/pie-chart-data/').then((response: any) => {
+                setSeries(response?.data?.series);
+                setLabels(response?.data?.labels);
+                setColors(response?.data?.colors);
+            }), 4000)
+        };
+    }, []);
     return (
-        <Chart
-            options={options}
-            type="pie"
-            width="700"
+        series === null || labels === null || colors === null ? (<div className="spinner-border text-primary" role="status" />) : <Chart
+            options={{...options, labels, colors: colors}}
+            type="donut"
             series={series}
+            width={"240%"}
+            height={"90%"}
         />
     )
 };
